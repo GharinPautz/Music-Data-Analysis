@@ -1,7 +1,7 @@
 import numpy as np
 import math
 import random
-import mysklearn.mypytable as mpt
+import mypytable as mpt
 
 
 def get_column_by_index(table, col_index):
