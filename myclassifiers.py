@@ -1,5 +1,5 @@
-import mysklearn.myutils as myutils
-import mysklearn.mypytable as mypytable
+import myutils
+import mypytable
 import random
 import operator
 import math

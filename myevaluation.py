@@ -8,12 +8,12 @@ Did not attempt bonus
 Description: This file contains methods for classifier evaluation
 """
 
-import mysklearn.myutils as myutils
+import myutils
 import random
 import math
 import copy
 import numpy as np
-import mysklearn.mypytable as mypytable
+import mypytable
 
 def train_test_split(X, y, test_size=0.33, random_state=None, shuffle=True):
     """Split dataset into train and test sets (sublists) based on a test set size.
@@ -124,9 +124,9 @@ def stratified_kfold_cross_validation(X, y, n_splits=5):
     header = ["index", "class label"]
 
     # append class label (y val) to each instance in X
-    X_copy = copy.deepcopy(X)
+    # X_copy = copy.deepcopy(X)
     X_indices = []
-    for index, instance in enumerate(X_copy):
+    for index, instance in enumerate(X):
         X_indices.append([index, y[index]])
 
     # create mypytable obj

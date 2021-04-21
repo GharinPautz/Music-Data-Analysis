@@ -288,7 +288,7 @@ class MyPyTable:
             
             stats_table.append(row)
 
-        return MyPyTable(col_names, stats_table)
+        return MyPyTable(["attribute", "min", "max", "mid", "avg", "median"], stats_table)
 
     def perform_inner_join(self, other_table, key_column_names):
         """Return a new MyPyTable that is this MyPyTable inner joined with other_table based on key_column_names.
