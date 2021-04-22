@@ -40,6 +40,126 @@ def get_column(table, header, col_name):
             column.append(row[col_index])
     return column
 
+
+def get_instance_names(x):
+    """Get list of instances from list x
+
+    Args:
+        x (list): List of instances
+
+    Returns:
+        categories (list): list of unique instance values from list x
+    """
+
+    categories = []
+
+    for value in x:
+        if value not in categories:
+            categories.append(value)
+
+    return categories
+
+def get_value_counts(x):
+    """Gets counts of each unique instance value in list x
+
+    Args:
+        x (list): List of instances
+
+    Returns:
+        categories (list): list of unique instance values from list x
+        counts (list of int): list of number of times each unique occurence occurs
+
+    """
+    categories = get_instance_names(x)
+    try:
+        categories.sort()
+    except:
+        categories = categories
+    
+    counts = []
+    for category in categories:
+        count = 0
+        for val in x:
+            if val == category:
+                count += 1
+        counts.append(count)
+
+    return categories, counts
+
+def find_unique_values(list1, index=None):
+    """Finds unique values in a list
+
+    Args:
+        list1(list of list of obj): list of values we are analyzing
+
+    Returns:
+        vals (list of obj): list of all the unique values in list1
+    """
+    vals = []
+
+    if all(isinstance(elem, list) for elem in list1):
+        for val in list1:
+            if val[index] not in vals:
+                vals.append(val[index])
+    else:
+        for val in list1:
+            if val not in vals:
+                vals.append(val)
+
+    return vals
+
+def calculate_list_sums(list1, list2):
+    """Calculates sum of lists as helper function for linear regression
+
+    Args:
+        list1 (list of int): List representing x values
+        list2 (list of int): List representing y values
+
+    Returns:
+        n (int): number of elements in list
+        x_sum (int): sum of x values
+        y_sum (int): sum of y values
+        xy_sum (int): sum of xy values
+        x2_sum (int): sum of x^2 values
+        y2_sum (int): sum of y^2 values
+    """
+    n = len(list1)
+    x_sum = sum(list1)
+    y_sum = sum(list2)
+
+    xy_list = []
+    x2_list = []
+    y2_list = []
+    for i in range(0, len(list1)):
+        xy_list.append(list1[i] * list2[i])
+        x2_list.append(list1[i] ** 2)
+        y2_list.append(list2[i] ** 2)
+
+    xy_sum = sum(xy_list)
+
+    x2_sum = sum(x2_list)
+    y2_sum = sum(y2_list)
+
+    return n, x_sum, y_sum, xy_sum, x2_sum, y2_sum
+
+def calculate_linear_regression(list1, list2):
+    """Calculates linear regression of data points
+
+    Args:
+        list1 (list of int): List representing x values
+        list2 (list of int): List representing y values
+
+    Returns:
+        a (float): the intercept of the regression line
+        b (float): the slope of the regression line
+    """
+    n, x_sum, y_sum, xy_sum, x2_sum, y2_sum = calculate_list_sums(list1, list2)
+
+    a = ((y_sum * x2_sum)-(x_sum * xy_sum)) / (n * (x2_sum) - (x_sum ** 2))
+    b = ((n * xy_sum) - (x_sum * y_sum)) / ((n * x2_sum) - (x_sum ** 2))
+
+    return a, b
+
 def group_by(table, header, group_by_col_name):
     """group table rows into various subtables by common values in given column
 
