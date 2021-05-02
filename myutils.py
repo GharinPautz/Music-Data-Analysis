@@ -669,3 +669,25 @@ def get_decision_rules(tree, attribute_names, class_name, decision_rules, decisi
         decision_str = ""
     
     return decision_rules
+
+def get_even_classifier_instances(table):
+    new_table_data = []
+    new_table_headers = table.column_names 
+    genres = table.get_column('genre')
+    categories, counts = get_value_counts(genres)
+    min_count = min(counts)
+    min_category = counts.index(min_count)
+
+    group_names, group_subtables = group_by(table.data, table.column_names, "genre")
+
+    # grab min_count instances for each genre label and add to new_table data
+    for index, subtable in enumerate(group_subtables):
+        for i in range(min_count):                
+            rand_index = random.randint(0, len(subtable) - 1)
+            instance = subtable[rand_index]
+            while(instance in new_table_data):
+                rand_index = random.randint(0, len(subtable) - 1)
+                instance = subtable[rand_index]
+            new_table_data.append(instance)
+
+    return mpt.MyPyTable(new_table_headers, new_table_data)
