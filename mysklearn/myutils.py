@@ -708,13 +708,15 @@ def random_attribute_subset(attributes, F):
     random.shuffle(shuffled)
     return shuffled[:F]
 
-def attribute_subset_table(training_set, attribute_subset):
-    subset_table = []
-    for index in attribute_subset:
-        subset_table.append(get_column_by_index(training_set, index))
-    subset_table = transpose(subset_table)
-    return subset_table
-
+def attribute_subset_table(X_train, attribute_subset):
+    new_train = []
+    for instance in X_train:
+        new_instance = []
+        for index in attribute_subset:
+            new_instance.append(instance[index])
+        new_train.append(new_instance)
+    return new_train
+    
 def categorize_values(table):
     new_table_data = []
     new_table_headers = []
@@ -827,7 +829,30 @@ def remove_column(table, index):
 
 def generate_F_indices(num_attributes, F):
     rand_list = []
-    for _ in range(0, F):
-          r = random.randint(0, num_attributes)
+    while len(rand_list) < F:
+          r = random.randint(0, num_attributes - 1)
           if r not in rand_list:
             rand_list.append(int(r))
+    return rand_list
+
+def calculate_predictive_accuracy(predicted_list, y_test):
+    """Calculates predictive accuracy given predictions and actual values
+
+    Args:
+        predicted_list(list of obj): The predictions of classifiers
+        y_test(list of obj): The actual classifiers we are checking against
+
+    Returns:
+        accuracy(float): The accuracy of the predictions
+        error_rate(float): the error rate of the predictions
+    """
+    n = len(y_test)
+
+    count_correct = 0
+    for i in range(0, n):
+        if predicted_list[i] == y_test[i]:
+            count_correct += 1
+    
+    accuracy = count_correct / n
+    error_rate = (n - count_correct) / n
+    return accuracy, error_rate

@@ -800,18 +800,22 @@ class MyRandomForestClassifier:
             # call train test split to get X_train, y_train, X_test, y_test
             tree_X_train, tree_X_validation, tree_y_train, tree_y_validation = myutils.train_test_split(bootstrapped_X, bootstrapped_y, 1/3)
             # TODO: Randomly select F indices and make X_train those F columns
+            # print(tree_X_train[:10])
+            # print(tree_X_validation[:10])
+            # print(tree_y_train[:10])
+            # print(tree_y_validation[:10])
 
-            num_attributes = len(tree_X_train)
+            num_attributes = len(tree_X_train[0])
             attr_indices = myutils.generate_F_indices(num_attributes, self.F)
-            print(attr_indices)
             attr_indices = sorted(attr_indices)
             attr_sets.append(attr_indices)
 
-            tree_X_train = myutils.attribute_subset_table(tree_X_train, attr_indices)
+            subsetted_tree_X_train = myutils.attribute_subset_table(tree_X_train, attr_indices)
 
             # create decision tree
             decision_tree = MyDecisionTreeClassifier()
-            decision_tree.fit(tree_X_train, tree_y_train)
+            # print(subsetted_tree_X_train[:10])
+            decision_tree.fit(subsetted_tree_X_train, tree_y_train)
             trees.append(decision_tree)
 
             # calculate tree accuracy using validation set
@@ -841,9 +845,11 @@ class MyRandomForestClassifier:
         for instance in X_test:
             predictions = []
             num_trees = len(self.best_m_trees)
-            for i in range(0,num_trees):
-                instance = myutils.attribute_subset_table(instance, self.M_attr_sets[i])
-                predicted = self.best_m_trees[i].predict(instance)
+            for i in range(0, num_trees - 1):
+                test_instance = []
+                for j in self.M_attr_sets[i]:
+                    test_instance.append(instance[j])
+                predicted = self.best_m_trees[i].predict([test_instance])
                 for index, prediction in enumerate(predicted):
                     predictions.append(prediction)
             
