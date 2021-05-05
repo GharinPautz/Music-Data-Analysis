@@ -1,6 +1,7 @@
 import os
 import pickle
 import json
+import random
 from flask import Flask, jsonify, request
 from mysklearn.myclassifiers import MyNaiveBayesClassifier, MyKNeighborsClassifier
 from mysklearn import mypytable as mpt
@@ -73,7 +74,9 @@ def predict():
         result = {"prediction":prediction}
         return jsonify(result), 200
     else:
-        result = {"prediction":"pop"}
+        results_array = ["pop", "hip hop", "rock", "blues", "country", "jazz", "raggae"]
+        rand_int = random.rand_int(0,len(results_array))
+        result = {"prediction":results_array[rand_int]}
         return jsonify(result), 200
 
 
