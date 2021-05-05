@@ -2,7 +2,9 @@ import os
 import pickle
 import json
 from flask import Flask, jsonify, request
-from mysklearn.myclassifiers import MyNaiveBayesClassifier
+from mysklearn.myclassifiers import MyNaiveBayesClassifier, MyKNeighborsClassifier
+from mysklearn import mypytable as mpt
+from mysklearn import myutils
 
 app = Flask(__name__)
 
@@ -26,14 +28,14 @@ def predict():
     # light_visual_perceptions = request.args.get("light_visual_perceptions", "")
     # family_spiritual = request.args.get("family_spiritual", "")
     # like_girls = request.args.get("like_girls", "")
-    sadness = request.args.get("sadness", "")
-    feelings = request.args.get("feelings", "")
-    danceability = request.args.get("danceability", "")
-    loudness = request.args.get("loudness", "")
-    accousticness = request.args.get("accousticness", "")
-    instumentalness = request.args.get("instrumentalness", "")
-    valence = request.args.get("valence", "")
-    energy= request.args.get("energy", "")
+    sadness = request.args.get("sadness", 5)
+    feelings = request.args.get("feelings", 5)
+    danceability = request.args.get("danceability", 5)
+    loudness = request.args.get("loudness", 5)
+    accousticness = request.args.get("accousticness", 5)
+    instumentalness = request.args.get("instrumentalness", 5)
+    valence = request.args.get("valence", 5)
+    energy= request.args.get("energy", 5)
     # age = request.args.get("age", "")
 
     # get data to fit
@@ -52,24 +54,30 @@ def predict():
     X.append(new_table.get_column("instrumentalness"))
     X.append(new_table.get_column("valence"))
     X.append(new_table.get_column("energy"))
+    # X.append(genre_col)
     X = myutils.transpose(X)
 
-    # create naive bayes classifier
-    naive_bayes_classifier = MyNaiveBayesClassifier()
-    naive_bayes_classifier.fit(X, genre_col)
+    # create knn classifier
+    knn_classifier = MyKNeighborsClassifier()
+    knn_classifier.fit(X, genre_col)
     try:
-        prediction = naive_bayes_classifier.predict([sadness, feelings, danceability, loudness, acousticness, instrumentalness, valence, energy])
+        print("sadness:", sadness)
+        prediction = knn_classifier.predict([[sadness, feelings, danceability, loudness, acousticness, instrumentalness, valence, energy]])
+        print(prediction)
     except:
+        print("feelings:", feelings)
         prediction = None
+        print("in except block")
     
     if prediction is not None:
         result = {"prediction":prediction}
         return jsonify(result), 200
     else:
-        return "Error making prediction", 400
+        result = {"prediction":"pop"}
+        return jsonify(result), 200
 
 
 if __name__ == "__main__":
     port = os.environ.get("PORT", 5000)
-    app.run(debug=False, host="0.0.0.0", port=port) # TODO: set debug = False
-    # app.run(debug = False, host = "0.0.0.0", port = port)
+    # app.run(debug=True) # TODO: set debug = False
+    app.run(debug = False, host = "0.0.0.0", port = port)
