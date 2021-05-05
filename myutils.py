@@ -748,3 +748,52 @@ def categorize_values(table):
             new_row.append(new_value)
         new_table.append(new_row)
     return new_table
+def compute_bootstrapped_sample(table):
+    n = len(table)
+    sample = []
+    for _ in range(n):
+        rand_index = random.randrange(0, n)
+        sample.append(table[rand_index])
+    return sample
+
+def train_test_split(X, y, test_size):
+    """Split dataset into train and test sets (sublists) based on a test set size.
+
+    Args:
+        X(list of list of obj): The list of samples
+            The shape of X is (n_samples, n_features)
+        y(list of obj): The target y values (parallel to X)
+            The shape of y is n_samples
+        test_size(float or int): float for proportion of dataset to be in test set (e.g. 0.33 for a 2:1 split)
+            or int for absolute number of instances to be in test set (e.g. 5 for 5 instances in test set)
+
+    Returns:
+        X_train(list of list of obj): The list of training samples
+        X_test(list of list of obj): The list of testing samples
+        y_train(list of obj): The list of target y values for training (parallel to X_train)
+        y_test(list of obj): The list of target y values for testing (parallel to X_test)
+    """
+    num_instances = len(X)
+    if isinstance(test_size, float):
+        test_size = math.ceil(num_instances * test_size)
+    split_index = num_instances - test_size
+
+    return X[:split_index], X[split_index:], y[:split_index], y[split_index:]
+
+def remove_column(table, index):
+    new_table = []
+    length = len(table[0])
+    for instance in table:
+        new_row = []
+        for i in range(0, length):
+            if i != index:
+                new_row.append(instance[i])
+        new_table.append(new_row)
+    return new_table
+
+def generate_F_indices(num_attributes, F):
+    rand_list=[]
+    for i in range(F):
+          r = random.randint(1,num_attributes)
+          if r not in rand_list:
+            rand_list.append(r)
