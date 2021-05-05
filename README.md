@@ -11,4 +11,4 @@ Run test files by using the command *pytest test_name.py*
 EDA in genrefy_data_analysis.ipynb Jupyter Notebook  
 Tests in test_random_forest_classifier.py and test_myclassifiers.py  
 Dataset in tcc_ceds_music.csv   
-Classifiers in myclassifiers.py  
+Classifiers in mysklearn -> myclassifiers.py  
