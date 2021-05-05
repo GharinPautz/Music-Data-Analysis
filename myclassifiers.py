@@ -262,7 +262,6 @@ class MyNaiveBayesClassifier:
                     key = "att" + str(i) + "=" + str(attribute_group_names[index])
                     val = len(attribute_subtable) / num_classifier_instances
                     posteriors_dict[classifier_key][key] = val
-
         self.X_train = X_train
         self.y_train = y_train
         self.priors = priors_dict
@@ -777,6 +776,7 @@ class MyRandomForestClassifier:
         """
         self.X_train = None 
         self.y_train = None
+        self.best_trees = None
         self.N = N
         self.M = M
         self.F = F
