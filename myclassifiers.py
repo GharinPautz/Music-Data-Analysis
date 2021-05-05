@@ -262,7 +262,6 @@ class MyNaiveBayesClassifier:
                     key = "att" + str(i) + "=" + str(attribute_group_names[index])
                     val = len(attribute_subtable) / num_classifier_instances
                     posteriors_dict[classifier_key][key] = val
-
         self.X_train = X_train
         self.y_train = y_train
         self.priors = priors_dict
@@ -458,6 +457,7 @@ class MyRandomForestClassifier:
         """
         self.X_train = None 
         self.y_train = None
+        self.best_trees = None
         self.N = N
         self.M = M
         self.F = F
@@ -466,18 +466,18 @@ class MyRandomForestClassifier:
         self.X_train = X_train
         self.y_train = y_train
 
-        # bagging
-        bootstrap_table, bootstrap_y = myutils.bootstrap(X_train, y_train)
-        # divide bootstrap_table into test (1/3) and remainder (2/3) sets
-        test_set_end_index = int(len(bootstrap_table) / 3)
-        test_set = bootstrap_table[:test_set_end_index]
-        test_set_y = bootstrap_y[:test_set_end_index]
-        remainder_set = bootstrap_table[test_set_end_index:]
-        remainder_set_y = bootstrap_y[test_set_end_index:]
-
         trees = []
         tree_accuracies = []
         for i in range(self.N):
+            # bagging
+            bootstrap_table, bootstrap_y = myutils.bootstrap(X_train, y_train)
+            # divide bootstrap_table into test (1/3) and remainder (2/3) sets
+            test_set_end_index = int(len(bootstrap_table) / 3)
+            test_set = bootstrap_table[:test_set_end_index]
+            test_set_y = bootstrap_y[:test_set_end_index]
+            remainder_set = bootstrap_table[test_set_end_index:]
+            remainder_set_y = bootstrap_y[test_set_end_index:]
+
             # split remainder set into training (2/3) and validation (1/3) sets
             validation_set_end_index = int(len(remainder_set) / 3)
             validation_set = remainder_set[:validation_set_end_index]
@@ -512,10 +512,24 @@ class MyRandomForestClassifier:
         tuples = zip(*sorted_zipped)
         sorted_trees, sorted_accuracies = [list(tuple) for tuple in tuples]
         best_m_trees = sorted_trees[:self.M]
+        self.best_trees = best_m_trees
 
         # run test_set instances over selected M trees to make predictions
         predictions = [[] for i in range(len(test_set))]
-        for tree in best_m_trees:
+        for tree in self.best_trees:
+            predicted = tree.predict(test_set)
+            for index, prediction in enumerate(predicted):
+                predictions[index].append(prediction)
+        
+        classifications = []
+        for test_predictions in predictions:
+            classifications.append(max(set(test_predictions), key=test_predictions.count))
+        return classifications
+
+    def predict(test_set):
+        # run test_set instances over selected M trees to make predictions
+        predictions = [[] for i in range(len(test_set))]
+        for tree in self.best_trees:
             predicted = tree.predict(test_set)
             for index, prediction in enumerate(predicted):
                 predictions[index].append(prediction)
