@@ -805,6 +805,8 @@ class MyRandomForestClassifier:
 
             num_attributes = len(tree_X_train)
             attr_indices = myutils.generate_F_indices(num_attributes, self.F)
+            print(attr_indices)
+            attr_indices = sorted(attr_indices)
             attr_sets.append(attr_indices)
 
             tree_X_train = myutils.attribute_subset_table(tree_X_train, attr_indices)

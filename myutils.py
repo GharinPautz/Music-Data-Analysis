@@ -792,8 +792,8 @@ def remove_column(table, index):
     return new_table
 
 def generate_F_indices(num_attributes, F):
-    rand_list=[]
-    for i in range(F):
-          r = random.randint(1,num_attributes)
+    rand_list = []
+    for _ in range(0, F):
+          r = random.randint(0, num_attributes)
           if r not in rand_list:
-            rand_list.append(r)
+            rand_list.append(int(r))
