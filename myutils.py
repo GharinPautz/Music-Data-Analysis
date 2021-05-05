@@ -691,3 +691,26 @@ def get_even_classifier_instances(table):
             new_table_data.append(instance)
 
     return mpt.MyPyTable(new_table_headers, new_table_data)
+
+def bootstrap(table, y):
+    n = len(table)
+    bootstrap_table = []
+    bootstrap_y = []
+    for _ in range(n):
+        rand_index = random.randrange(0, n)
+        bootstrap_table.append(table[rand_index])
+        bootstrap_y.append(y[rand_index])
+    return bootstrap_table, bootstrap_y
+
+def random_attribute_subset(attributes, F):
+    # shuffle and pick first F
+    shuffled = attributes[:] # make a copy
+    random.shuffle(shuffled)
+    return shuffled[:F]
+
+def attribute_subset_table(training_set, attribute_subset):
+    subset_table = []
+    for index in attribute_subset:
+        subset_table.append(get_column_by_index(training_set, index))
+    subset_table = transpose(subset_table)
+    return subset_table

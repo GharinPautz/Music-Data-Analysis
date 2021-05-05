@@ -3,6 +3,7 @@ import mypytable
 import random
 import operator
 import math
+import myevaluation
 
 class MySimpleLinearRegressor:
     """Represents a simple linear regressor.
@@ -457,7 +458,6 @@ class MyRandomForestClassifier:
         """
         self.X_train = None 
         self.y_train = None
-        self.tree = tree
         self.N = N
         self.M = M
         self.F = F
@@ -466,8 +466,63 @@ class MyRandomForestClassifier:
         self.X_train = X_train
         self.y_train = y_train
 
-    def predict(self):
-        pass
-        # TODO
+        # bagging
+        bootstrap_table, bootstrap_y = myutils.bootstrap(X_train, y_train)
+        # divide bootstrap_table into test (1/3) and remainder (2/3) sets
+        test_set_end_index = int(len(bootstrap_table) / 3)
+        test_set = bootstrap_table[:test_set_end_index]
+        test_set_y = bootstrap_y[:test_set_end_index]
+        remainder_set = bootstrap_table[test_set_end_index:]
+        remainder_set_y = bootstrap_y[test_set_end_index:]
+
+        trees = []
+        tree_accuracies = []
+        for i in range(self.N):
+            # split remainder set into training (2/3) and validation (1/3) sets
+            validation_set_end_index = int(len(remainder_set) / 3)
+            validation_set = remainder_set[:validation_set_end_index]
+            validation_set_y = remainder_set_y[:validation_set_end_index]
+            training_set = remainder_set[validation_set_end_index:]
+            training_set_y = remainder_set_y[validation_set_end_index:]
+
+            # select F attributes from training set
+            # attribute_indexes = list(range(len(training_set[0])))
+            # attribute_subset = myutils.random_attribute_subset(attribute_indexes, self.F)
+
+            # training_set = myutils.attribute_subset_table(training_set, attribute_subset)
+
+            # create decision tree
+            decision_tree = MyDecisionTreeClassifier()
+            decision_tree.fit(training_set, training_set_y)
+            trees.append(decision_tree)
+
+            # calculate tree accuracy using validation set
+            predicted = decision_tree.predict(validation_set)
+            match_count = 0
+            for index, prediction in enumerate(predicted):
+                if prediction == validation_set_y[index]:
+                    match_count += 1
+            accuracy = match_count / len(predicted)
+            tree_accuracies.append(accuracy)
+        
+        # select M best trees based on accuracies
+        # sort accuracies and cooresponding trees
+        zipped_lists = zip(trees, tree_accuracies)
+        sorted_zipped = sorted(zipped_lists, reverse=True, key=lambda x:x[1])
+        tuples = zip(*sorted_zipped)
+        sorted_trees, sorted_accuracies = [list(tuple) for tuple in tuples]
+        best_m_trees = sorted_trees[:self.M]
+
+        # run test_set instances over selected M trees to make predictions
+        predictions = [[] for i in range(len(test_set))]
+        for tree in best_m_trees:
+            predicted = tree.predict(test_set)
+            for index, prediction in enumerate(predicted):
+                predictions[index].append(prediction)
+        
+        classifications = []
+        for test_predictions in predictions:
+            classifications.append(max(set(test_predictions), key=test_predictions.count))
+        return classifications
 
 
