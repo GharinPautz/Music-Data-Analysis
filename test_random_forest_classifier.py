@@ -28,3 +28,5 @@ def test_random_forest_fit():
     random_forest_classifier =  MyRandomForestClassifier(N=5, M=3, F=3)
     classification = random_forest_classifier.fit(interview_table, y_train)
     print("classification: ", classification)
+
+    

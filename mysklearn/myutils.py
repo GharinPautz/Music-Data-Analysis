@@ -716,38 +716,72 @@ def attribute_subset_table(training_set, attribute_subset):
     return subset_table
 
 def categorize_values(table):
-    new_table = []
-    for row in table:
+    new_table_data = []
+    new_table_headers = []
+    
+    for row_index, row in enumerate(table.data):
         new_row = []
-        for value in row:
+        for val_index, value in enumerate(row):
             try:            
                 # convert to scale from 1 - 10
                 if value >= 0.0 and value < 0.1:
                     new_value = 1
+                    new_row.append(new_value)
+                    if row_index == 0:
+                        new_table_headers.append(table.column_names[val_index])
                 elif value >= 0.1 and value < 0.2:
                     new_value = 2
+                    new_row.append(new_value)
+                    if row_index == 0:
+                        new_table_headers.append(table.column_names[val_index])
                 elif value >= 0.2 and value < 0.3:
                     new_value = 3
+                    new_row.append(new_value)
+                    if row_index == 0:
+                        new_table_headers.append(table.column_names[val_index])                   
                 elif value >= 0.3 and value < 0.4:
                     new_value = 4
+                    new_row.append(new_value)
+                    if row_index == 0:
+                        new_table_headers.append(table.column_names[val_index])                    
                 elif value >= 0.4 and value < 0.5:
                     new_value = 5
+                    new_row.append(new_value)
+                    if row_index == 0:
+                        new_table_headers.append(table.column_names[val_index])                    
                 elif value >= 0.5 and value < 0.6:
                     new_value = 6
+                    new_row.append(new_value)
+                    if row_index == 0:
+                        new_table_headers.append(table.column_names[val_index])                    
                 elif value >= 0.6 and value < 0.7:
                     new_value = 7
+                    new_row.append(new_value)
+                    if row_index == 0:
+                        new_table_headers.append(table.column_names[val_index])
                 elif value >= 0.7 and value < 0.8:
                     new_value = 8
+                    new_row.append(new_value)
+                    if row_index == 0:
+                        new_table_headers.append(table.column_names[val_index])
                 elif value >= 0.8 and value < 0.9:
                     new_value = 9
+                    new_row.append(new_value)
+                    if row_index == 0:
+                        new_table_headers.append(table.column_names[val_index])
                 elif value >= 0.9 and value <= 1.0:
                     new_value = 10
+                    new_row.append(new_value)
+                    if row_index == 0:
+                        new_table_headers.append(table.column_names[val_index])
+                else:
+                    pass
             except TypeError:
                 # not a decimal value
-                new_value = value
-            new_row.append(new_value)
-        new_table.append(new_row)
-    return new_table
+                pass
+        new_table_data.append(new_row)
+    return mpt.MyPyTable(new_table_headers, new_table_data)
+    
 def compute_bootstrapped_sample(table):
     n = len(table)
     sample = []
