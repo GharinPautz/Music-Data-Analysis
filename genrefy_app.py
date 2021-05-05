@@ -75,12 +75,12 @@ def predict():
         return jsonify(result), 200
     else:
         results_array = ["pop", "hip hop", "rock", "blues", "country", "jazz", "raggae"]
-        rand_int = random.rand_int(0,len(results_array))
+        rand_int = random.randint(0,len(results_array))
         result = {"prediction":results_array[rand_int]}
         return jsonify(result), 200
 
 
 if __name__ == "__main__":
     port = os.environ.get("PORT", 5000)
-    # app.run(debug=True) # TODO: set debug = False
-    app.run(debug = False, host = "0.0.0.0", port = port)
+    app.run(debug=True) # TODO: set debug = False
+    #app.run(debug = False, host = "0.0.0.0", port = port)
