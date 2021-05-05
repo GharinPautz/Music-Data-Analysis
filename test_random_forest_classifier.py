@@ -1,5 +1,5 @@
-from myclassifiers import MyRandomForestClassifier, MyDecisionTreeClassifier
-import mypytable as mpt
+from mysklearn.myclassifiers import MyRandomForestClassifier, MyDecisionTreeClassifier
+import mysklearn.mypytable as mpt
 
 def test_random_forest_fit():
     # interview dataset
