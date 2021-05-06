@@ -1,7 +1,7 @@
 import mysklearn.myutils
 import copy
 import csv 
-# from tabulate import tabulate # uncomment if you want to use the pretty_print() method
+from tabulate import tabulate # uncomment if you want to use the pretty_print() method
 # install tabulate with: pip install tabulate
 
 # required functions/methods are noted with TODOs
@@ -29,10 +29,38 @@ class MyPyTable:
             data = []
         self.data = copy.deepcopy(data)
 
-    # def pretty_print(self):
-    #     """Prints the table in a nicely formatted grid structure.
-    #     """
-    #     print(tabulate(self.data, headers=self.column_names))
+    def pretty_print(self):
+        """Prints the table in a nicely formatted grid structure.
+        """
+        print(tabulate(self.data, headers=self.column_names))
+
+    def get_rows(self, key_column_names):
+        instances = []
+        for row in self.data:
+            instances.append(self.get_key_values(key_column_names, self.column_names, row))
+        
+        return instances
+    
+    def get_key_values(self, key_column_names, header, row):
+        """Returns the values in the given list for the columns specified in key_column_names.
+
+        Args:
+            key_column_names (list of str): the column names we want to retrive data for
+            header (list of str): all the column names in the table
+            row (list): the row from a table we are extracting the values from
+
+        Returns:
+            values (list): a list of values from row that correspond to key_column_names
+        """
+        cols = []
+        for key in key_column_names:
+            cols.append(header.index(key))
+            
+        values = []
+        for key in cols:
+            values.append(row[key])
+
+        return values
 
     def get_shape(self):
         """Computes the dimension of the table (N x M).
